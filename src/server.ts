@@ -110,6 +110,9 @@ export const server = http.createServer((req, res) => {
         res.writeHead(400, { "Content-Type": "application/json" });
         res.end(JSON.stringify({ message: "Invalid data in request" }));
       }
+    } else {
+      res.writeHead(404, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ message: "Endpoint not found" }));
     }
   });
 });
