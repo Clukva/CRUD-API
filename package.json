@@ -4,7 +4,7 @@
   "description": "simple crud api",
   "main": "index.js",
   "scripts": {
-    "start:prod:": "node dist/index.js",
+    "start:prod": "npm run build && node dist/index.js",
     "start:dev": "nodemon --watch src --exec ts-node-dev src/index.ts",
     "build": "tsc",
     "lint": "eslint . --ext .ts",
@@ -29,3 +29,4 @@
     "uuid": "^9.0.0"
   }
 }
+
