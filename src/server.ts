@@ -59,6 +59,57 @@ export const server = http.createServer((req, res) => {
         res.writeHead(201, { "Content-Type": "application/json" });
         res.end(JSON.stringify(newUser));
       }
+    } else if (url?.startsWith("/api/users/") && method === "PUT") {
+      const userId = url.split("/")[3];
+      if (isUUID(userId)) {
+        const userIndex = users.findIndex((user) => user.id === userId);
+
+        if (userIndex === -1) {
+          res.writeHead(404, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ message: "Person isn't found" }));
+        } else {
+          const { username, age, hobbies } = JSON.parse(requestBody);
+          if (!username || !age || !hobbies) {
+            res.writeHead(400, { "Content-Type": "application/json" });
+            res.end(
+              JSON.stringify({
+                message: "Username, age and hobbies are required fields",
+              })
+            );
+          } else {
+            const updatedUser: User = {
+              id: userId,
+              username,
+              age,
+              hobbies: hobbies || [],
+            };
+
+            users[userIndex] = updatedUser;
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify(updatedUser));
+          }
+        }
+      } else {
+        res.writeHead(400, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ message: "Invalid data in request" }));
+      }
+    } else if (url?.startsWith("/api/users/") && method === "DELETE") {
+      const userId = url.split("/")[3];
+      if (isUUID(userId)) {
+        const userIndex = users.findIndex((user) => user.id === userId);
+
+        if (userIndex === -1) {
+          res.writeHead(404, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ message: "Person isn't found" }));
+        } else {
+          users.splice(userIndex, 1);
+          res.writeHead(204, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ message: "Person was deleted" }));
+        }
+      } else {
+        res.writeHead(400, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ message: "Invalid data in request" }));
+      }
     }
   });
 });
